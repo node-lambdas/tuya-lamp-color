@@ -4,8 +4,8 @@ on:
     branches:
       - main
 
-# jobs:
-#   release:
-#     uses: node-lambdas/core/.github/workflows/fn.yml@main
-#     with:
-#       name:
+jobs:
+  release:
+    uses: node-lambdas/core/.github/workflows/fn.yml@main
+    with:
+      name: tuya-lamp-color

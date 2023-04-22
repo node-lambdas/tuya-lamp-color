@@ -1,0 +1,17 @@
+{
+  "name": "tuya-lamp-color",
+  "version": "1.0.0",
+  "description": "Template for new functions",
+  "main": "./index.js",
+  "scripts": {
+    "build": "echo OK"
+  },
+  "keywords": [
+    "node-lambdas"
+  ],
+  "author": "Darlan Alves <me@darlanalv.es>",
+  "license": "MIT",
+  "dependencies": {
+    "tuyapi": "^7.5.2"
+  }
+}
