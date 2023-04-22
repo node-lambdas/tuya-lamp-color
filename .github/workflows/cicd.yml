@@ -1,0 +1,11 @@
+name: CICD
+on:
+  push:
+    branches:
+      - main
+
+# jobs:
+#   release:
+#     uses: node-lambdas/core/.github/workflows/fn.yml@main
+#     with:
+#       name:
