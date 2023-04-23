@@ -1,11 +1,15 @@
 import TuyAPI from "tuyapi";
 
+const makeDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export default {
   version: 2,
+  input: "text",
   async handler(request, response) {
     const deviceId = request.options.id;
-    const localKey = request.credentials.key;
+    const localKey = request.credentials.key || request.options.key;
     const device = new TuyAPI({ deviceId, localKey });
+    const delay = Number(request.options.delay);
 
     await device.find();
     await device.connect();
@@ -19,14 +23,20 @@ export default {
       await device.set({ dps: 2, set: "colour" });
       console.log("Set lamp to colour mode");
 
-      const color = { r: 255, g: 0, b: 0, ...request.options };
-      await device.set({ dps: 5, set: color });
-      console.log("Lamp color changed to rgb", color);
+      const colors = request.body.trim().split("/n");
+      const spaces = /\s+/;
 
-      device.disconnect();
-      response.send("OK");
+      for (const color of colors) {
+        let [r = 0, g = 0, b = 0] = color.split(spaces);
+        await device.set({ dps: 5, set: { r, g, b } });
+        console.log(`Lamp ${deviceId} changed to rgb ${r},${g},${b}`);
+
+        if (delay) await makeDelay(delay);
+      }
 
       console.log(await device.get());
+      device.disconnect();
+      response.send("OK");
     });
 
     device.on("error", (error) => response.reject(String(error)));
