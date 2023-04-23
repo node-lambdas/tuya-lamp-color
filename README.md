@@ -1,6 +1,6 @@
-# fn-template
+# fn tuya-lamp-color
 
-Template for new functions
+Change colors in a Tuya-powered lamp
 
 ## Usage
 
