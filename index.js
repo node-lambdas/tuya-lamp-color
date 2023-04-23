@@ -8,22 +8,36 @@ export default {
   async handler(request, response) {
     const deviceId = request.options.id;
     const localKey = request.credentials.key || request.options.key;
-    const device = new TuyAPI({ deviceId, localKey });
+    const device = new TuyAPI({ id: deviceId, key: localKey });
     const delay = Number(request.options.delay);
 
-    await device.find();
-    await device.connect();
+    try {
+      await changeColor(device, deviceId, request.body.trim(), delay);
+      response.send("OK");
+    } catch (error) {
+      response.reject(error);
+    }
+  },
+};
+async function changeColor(device, deviceId, input, delay) {
+  await device.find();
+  await device.connect();
 
+  return new Promise((resolve, reject) => {
     device.on("connected", async () => {
       console.log("Connected to device " + deviceId);
 
-      await device.set({ dps: 1, set: true });
-      console.log("Lamp turned on");
+      await device.set({
+        multiple: true,
+        data: {
+          1: true,
+          2: "colour",
+        },
+      });
 
-      await device.set({ dps: 2, set: "colour" });
-      console.log("Set lamp to colour mode");
+      console.log("Lamp turned on in colour mode");
 
-      const colors = request.body.trim().split("/n");
+      const colors = input.split("/n");
       const spaces = /\s+/;
 
       for (const color of colors) {
@@ -31,16 +45,18 @@ export default {
         await device.set({ dps: 5, set: { r, g, b } });
         console.log(`Lamp ${deviceId} changed to rgb ${r},${g},${b}`);
 
-        if (delay) await makeDelay(delay);
+        if (delay) {
+          await makeDelay(delay);
+        }
       }
 
-      console.log(await device.get());
+      console.log(await device.get({ schema: true }));
       device.disconnect();
-      response.send("OK");
+      resolve();
     });
 
-    device.on("error", (error) => response.reject(String(error)));
+    device.on("error", (error) => reject(String(error)));
     device.on("data", console.log);
     device.on("dp-refresh", console.log);
-  },
-};
+  });
+}

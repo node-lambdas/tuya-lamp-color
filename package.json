@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Template for new functions",
   "main": "./index.js",
+  "type": "module",
   "scripts": {
     "build": "echo OK"
   },
