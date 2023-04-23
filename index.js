@@ -10,11 +10,25 @@ export default {
       async handler(request, response) {
         const deviceId = request.options.id;
         const localKey = request.credentials.key || request.options.key;
+        const instructions = request.body.trim();
+
+        if (!deviceId) {
+          return response.reject("Missing option: --id");
+        }
+
+        if (!localKey) {
+          return response.reject("Missing option: --id");
+        }
+
+        if (!instructions) {
+          return response.reject("Missing instructions: input is empty");
+        }
+
         const device = new TuyAPI({ id: deviceId, key: localKey });
         const delay = Number(request.options.delay);
 
         try {
-          await changeColor(device, deviceId, request.body.trim(), delay);
+          await changeColor(device, deviceId, instructions, delay);
           response.send("OK");
         } catch (error) {
           response.reject(error);
