@@ -4,21 +4,26 @@ const makeDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default {
   version: 2,
-  input: "text",
-  async handler(request, response) {
-    const deviceId = request.options.id;
-    const localKey = request.credentials.key || request.options.key;
-    const device = new TuyAPI({ id: deviceId, key: localKey });
-    const delay = Number(request.options.delay);
+  actions: {
+    default: {
+      input: "text",
+      async handler(request, response) {
+        const deviceId = request.options.id;
+        const localKey = request.credentials.key || request.options.key;
+        const device = new TuyAPI({ id: deviceId, key: localKey });
+        const delay = Number(request.options.delay);
 
-    try {
-      await changeColor(device, deviceId, request.body.trim(), delay);
-      response.send("OK");
-    } catch (error) {
-      response.reject(error);
-    }
+        try {
+          await changeColor(device, deviceId, request.body.trim(), delay);
+          response.send("OK");
+        } catch (error) {
+          response.reject(error);
+        }
+      },
+    },
   },
 };
+
 async function changeColor(device, deviceId, input, delay) {
   await device.find();
   await device.connect();
