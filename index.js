@@ -9,6 +9,7 @@ export default {
       input: "text",
       async handler(request, response) {
         const deviceId = request.options.id;
+        const deviceIp = request.options ?? '';
         const localKey = request.credentials.key || request.options.key;
         const instructions = request.body.trim();
 
@@ -24,7 +25,7 @@ export default {
           return response.reject("Missing instructions: input is empty");
         }
 
-        const device = new TuyAPI({ id: deviceId, key: localKey });
+        const device = new TuyAPI({ id: deviceId, key: localKey, ip: deviceIp });
         const delay = Number(request.options.delay);
 
         try {
