@@ -8,7 +8,6 @@ export default {
     default: {
       input: "text",
       async handler(request, response) {
-        console.log(request.options, request.parsedUrl);
         const deviceId = request.options.id;
         const localKey = request.credentials.key || request.options.key;
         const instructions = request.body.trim();
@@ -18,7 +17,7 @@ export default {
         }
 
         if (!localKey) {
-          return response.reject("Missing option: --id");
+          return response.reject("Missing option: --key");
         }
 
         if (!instructions) {
