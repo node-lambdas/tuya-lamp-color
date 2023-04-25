@@ -40,10 +40,8 @@ export default {
 };
 
 async function changeColor(device, deviceId, input, delay) {
-  await device.find();
-  await device.connect();
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     device.on("connected", async () => {
       console.log("Connected to device " + deviceId);
 
@@ -78,5 +76,10 @@ async function changeColor(device, deviceId, input, delay) {
     device.on("error", (error) => reject(String(error)));
     device.on("data", console.log);
     device.on("dp-refresh", console.log);
+
+    
+    await device.find();
+    await device.connect();
+
   });
 }
