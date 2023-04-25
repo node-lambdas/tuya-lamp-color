@@ -9,7 +9,7 @@ export default {
       input: "text",
       async handler(request, response) {
         const deviceId = request.options.id;
-        const deviceIp = request.options ?? '';
+        const deviceIp = request.options.ip ?? '';
         const localKey = request.credentials.key || request.options.key;
         const instructions = request.body.trim();
 
